@@ -188,17 +188,7 @@ plt.tight_layout()  # Adjust layout to prevent overlap
 plt.show()
 plt.close()
 
-
-#Revenue Seasonality (Line Plot): Group sales by month.
-
-#Look for: Spikes during "Black Friday" (November) in Brazil.
-#Look for: Does Olist experience a massive spike during Black Friday (November)?
-
-# df = product_combined.copy()
-# # Extract month from order_purchase_timestamp
-# df['month'] = df['order_purchase_timestamp'].dt.month
-# # Group by month and calculate total profit
-# monthly_profit = df.groupby('month')['Profit'].sum()
+# Calculate monthly revenue by summing price and freight_value for each order, then grouping by month and year
 order_combined['revenue'] = order_combined['price'] + order_combined['freight_value']
 
 order_combined['order_purchase_timestamp'] = pd.to_datetime(order_combined['order_purchase_timestamp'])
@@ -263,14 +253,4 @@ plt.show()
 plt.close()
 
 
-# review_counts = reviews_clean["review_score"].value_counts().sort_index()
 
-# plt.figure(figsize=(8, 5))
-# review_counts.plot(kind="bar")
-# plt.title("Review Score Distribution")
-# plt.xlabel("Review Score")
-# plt.ylabel("Count")
-# plt.xticks(rotation=0)
-# plt.tight_layout()
-# plt.savefig(VISUALS_DIR / "review_score_distribution.png")
-# plt.close()
