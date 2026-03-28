@@ -151,6 +151,7 @@ plt.ylabel('Total Profit')
 plt.xticks(rotation=90)
 plt.tight_layout()
 plt.show()
+plt.close()
 
 # which states have the worst delivery performance?
 # Merge orders with customers to get state information
@@ -185,3 +186,91 @@ plt.ylabel('Average Delivery Time (days)')
 plt.xticks(rotation=45)
 plt.tight_layout()  # Adjust layout to prevent overlap
 plt.show()
+plt.close()
+
+
+#Revenue Seasonality (Line Plot): Group sales by month.
+
+#Look for: Spikes during "Black Friday" (November) in Brazil.
+#Look for: Does Olist experience a massive spike during Black Friday (November)?
+
+# df = product_combined.copy()
+# # Extract month from order_purchase_timestamp
+# df['month'] = df['order_purchase_timestamp'].dt.month
+# # Group by month and calculate total profit
+# monthly_profit = df.groupby('month')['Profit'].sum()
+order_combined['revenue'] = order_combined['price'] + order_combined['freight_value']
+
+order_combined['order_purchase_timestamp'] = pd.to_datetime(order_combined['order_purchase_timestamp'])
+order_combined['year_month'] = order_combined['order_purchase_timestamp'].dt.to_period('M')
+
+monthly_revenue = (
+    order_combined.groupby('year_month')['revenue'].sum())
+print(monthly_revenue)
+print(order_combined.head(10))
+
+# Visualize monthly revenue with a line plot
+
+plt.figure(figsize=(12,6))
+monthly_revenue.plot(kind='line', marker='o', color='steelblue')
+plt.title('Monthly Revenue Over Time')
+plt.xlabel('Month')
+plt.ylabel('Total Revenue')
+plt.xticks(rotation=45)
+plt.grid()
+plt.tight_layout()  # Adjust layout to prevent overlap
+plt.show()
+plt.close()
+
+# Calculate the difference between delivered_date and estimated_delivery_date
+# dropna() removes rows where values are NaN
+delivered = orders_df.dropna(subset=[
+    "order_delivered_customer_date",
+    "order_estimated_delivery_date"
+])
+delivered["delivery_diff_days"] = (
+    delivered["order_delivered_customer_date"] -
+    delivered["order_estimated_delivery_date"]
+).dt.days
+print(delivered["delivery_diff_days"].head())
+
+# Visualize the distribution of delivery differences with a histogram
+plt.figure(figsize=(10, 6))
+plt.hist(delivered["delivery_diff_days"].dropna(), bins=30, color='skyblue', edgecolor='black')
+plt.title("Distribution of Delivery Differences")
+plt.xlabel("Days (Actual - Estimated)")
+plt.ylabel("Number of Orders")
+plt.xticks(rotation=45)
+plt.grid(True)
+plt.show()
+plt.close()
+
+# Category Popularity (Horizontal Bar Chart): Plot the top 10 product categories by order volume
+# print(product_combined.columns)
+category_counts = product_combined['product_category_name'].value_counts().head(10)
+print(category_counts)
+
+plt.figure(figsize=(10, 6))
+category_counts.plot(kind='barh', color='coral')
+plt.title("Top 10 Product Categories by Order Volume")
+plt.xlabel("Number of Orders")
+plt.ylabel("Product Category")
+plt.xticks(rotation=45)
+plt.tight_layout()
+#plt.subplots_adjust(left=0.3)
+plt.grid(True)
+plt.show()
+plt.close()
+
+
+# review_counts = reviews_clean["review_score"].value_counts().sort_index()
+
+# plt.figure(figsize=(8, 5))
+# review_counts.plot(kind="bar")
+# plt.title("Review Score Distribution")
+# plt.xlabel("Review Score")
+# plt.ylabel("Count")
+# plt.xticks(rotation=0)
+# plt.tight_layout()
+# plt.savefig(VISUALS_DIR / "review_score_distribution.png")
+# plt.close()
